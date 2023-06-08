@@ -10,29 +10,17 @@ int ReadingList::size() const { return theSize; }
 ReadingList::ReadingList() : theSize(0) {}
 
 void ReadingList::add(Book b) {
-  // Find the appropriate place to insert the new book to maintain sorted order.
-  auto it = std::find_if(books.begin(), books.end(), [&b](const Book &a) {
-    return a.getID() >= b.getID();  // We want to find the first book that should come after the new book.
+  // Find the correct place to insert the new book to maintain sorted order.
+  auto it = std::lower_bound(books.begin(), books.end(), b, [](const Book &a, const Book &b) {
+    return a.getID() < b.getID();
   });
 
   // Only add the book if it is not already in the list.
-  if (it == books.begin() || prev(it)->getID() != b.getID()) {
+  if (it == books.end() || it->getID() != b.getID()) {
     books.insert(it, b);
     theSize++;
   }
 }
-// void ReadingList::add(Book b) {
-//   // Find the appropriate place to insert the new book to maintain sorted order.
-//   auto it = std::find_if(books.begin(), books.end(), [&b](const Book &a) {
-//     return a.getID() > b.getID();  // We want to find the first book that should come after the new book.
-//   });
-
-//   // Only add the book if it is not already in the list.
-//   if (it == books.begin() || prev(it)->getID() != b.getID()) {
-//     books.insert(it, b);
-//     theSize++;
-//   }
-// }
 
 void ReadingList::remove(std::string bid) {
   for (auto it = books.begin(); it != books.end();) {
@@ -52,10 +40,10 @@ ReadingList::const_iterator ReadingList::find(std::string bookID) const {
 }
 
 //Find method for non-const objects
-ReadingList::iterator ReadingList::find(std::string bookID) {
-  return std::find_if(books.begin(), books.end(),
-                      [&](const Book &b) { return b.getID() == bookID; });
-}
+// ReadingList::iterator ReadingList::find(std::string bookID) {
+//   return std::find_if(books.begin(), books.end(),
+//                       [&](const Book &b) { return b.getID() == bookID; });
+// }
 
 bool ReadingList::contains(std::string bookID) const {
   return find(bookID) != books.end();

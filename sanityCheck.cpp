@@ -8,38 +8,24 @@ bool constCheck(const Book &) { return true; }
 
 bool constCheck(Book &) { return false; }
 
-// bool ReadingList::sanityCheck() const {
-//   const unsigned &n = theSize;
-//   // const list<Book> bookList = books;
-//   if (n > 1) {
-//     const_iterator start = begin();
-//     const_iterator next = start;
-//     ++next;
-//     while (next != end()) {
-//       if (*next < *start)
-//         return false;
-//       start = next;
-//       next++;
-//     }
-//   }
-//   ReadingList &fac = (ReadingList &)(*this);
-//   ReadingList::iterator iter = fac.begin();
-//   Book s;
-//   decltype(*iter) x = s;
-//   return constCheck(x);
-// }
-
 bool ReadingList::sanityCheck() const {
-  if (theSize > 1) {
+  const unsigned &n = theSize;
+  // const list<Book> bookList = books;
+  if (n > 1) {
     const_iterator start = begin();
     const_iterator next = start;
     ++next;
     while (next != end()) {
-      if ((*next).getID() < (*start).getID())
+      if (*next < *start)
         return false;
       start = next;
       next++;
     }
   }
-  return true;
+  ReadingList &fac = (ReadingList &)(*this);
+  ReadingList::iterator iter = fac.begin();
+  Book s;
+  decltype(*iter) x = s;
+  return constCheck(x);
 }
+
