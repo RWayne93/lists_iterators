@@ -1,8 +1,9 @@
 MAINPROG=mergeLists
 DIR=${PWD}
 ASST=$(notdir ${DIR})
-CC=gcc
-CXX=g++
+LLVM_DIR = /usr/local/opt/llvm/bin/
+CC=$(LLVM_DIR)clang
+CXX=$(LLVM_DIR)clang++
 ##
 # Adjust settings for different compilers
 #
@@ -41,10 +42,10 @@ TARGET=$(MAINPROG)$(EXE)
 CPPS=$(wildcard *.cpp)
 MAINCPPS=$(filter-out unittest.cpp test%.cpp, $(CPPS))
 TESTCPPS=$(filter-out $(MAINPROG).cpp, $(CPPS))
- 
+
 .SECONDARY:
 
-LINK=g++ $(CPPFLAGS)
+LINK=$(CXX) $(CPPFLAGS)
 #
 ########################################################################
 #
@@ -54,7 +55,6 @@ LINK=g++ $(CPPFLAGS)
 #  The following is "boilerplate" to set up the standard compilation
 #  commands:
 #
-
 
 MAINOBJS=$(MAINCPPS:%.cpp=%.o)
 TESTOBJS=$(TESTCPPS:%.cpp=%.o)
@@ -66,8 +66,6 @@ TESTFILES=$(wildcard Tests/*/*.params)
 TESTCASES=$(dir $(TESTFILES))
 TESTSOUT=$(sort $(TESTCASES:%=%/test.out))
 TESTSDIFF=$(sort $(TESTCASES:%=%/test.diff))
-
-
 
 %.d: %.cpp
 	touch $@
@@ -99,7 +97,6 @@ $(TARGET): $(MAINOBJS)
 unittest$(EXE): $(TESTOBJS)
 	$(LINK) $(FLAGS) -o $@ $^ $(LFLAGS)
 
-
 clean: cleanTests
 	-/bin/rm -rf *.d *.o $(TARGET) unittest$(EXE) docs 
 
@@ -116,8 +113,6 @@ documentation:
 %/test.diff: %/test.out
 	-diff -B $*test.out `ls $**.expected` | tee $@
 	-@diff -q -B $*test.out `ls $**.expected` && echo !!! Passed $* || echo !!! Failed $*
-
-
 
 make.dep: $(DEPENDENCIES)
 	-cat $(DEPENDENCIES) > $@
